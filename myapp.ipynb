@@ -1,0 +1,342 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 73,
+   "id": "d43cf210-895e-4c9b-af61-c3c5b6ecf3e2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import plotly.express as px\n",
+    "from jupyter_dash import JupyterDash\n",
+    "import dash_core_components as dcc\n",
+    "import dash_html_components as html\n",
+    "from dash.dependencies import Input, Output\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import requests"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 74,
+   "id": "e98ee637-d63e-48e4-955d-5a976f4494c7",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "dict_keys(['events', 'game_settings', 'phases', 'teams', 'total_players', 'elements', 'element_stats', 'element_types'])"
+      ]
+     },
+     "execution_count": 74,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "# Load Data\n",
+    "url = 'https://fantasy.premierleague.com/api/bootstrap-static/'\n",
+    "r= requests.get(url)\n",
+    "json = r.json()\n",
+    "json.keys()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 75,
+   "id": "82a26c94-22bd-40d6-8c2f-e787fbf9ef7a",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "gamedf = pd.DataFrame(json['events'])\n",
+    "elements_df = pd.DataFrame(json['elements'])\n",
+    "elements_types_df = pd.DataFrame(json['element_types'])\n",
+    "teams_df = pd.DataFrame(json['teams'])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 76,
+   "id": "ebf81c52-d359-4f21-ae02-b8dd12e021a0",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "<ipython-input-76-a15e9286e947>:2: SettingWithCopyWarning:\n",
+      "\n",
+      "\n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "\n",
+      "<ipython-input-76-a15e9286e947>:3: SettingWithCopyWarning:\n",
+      "\n",
+      "\n",
+      "A value is trying to be set on a copy of a slice from a DataFrame.\n",
+      "Try using .loc[row_indexer,col_indexer] = value instead\n",
+      "\n",
+      "See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy\n",
+      "\n"
+     ]
+    },
+    {
+     "data": {
+      "text/html": [
+       "<div>\n",
+       "<style scoped>\n",
+       "    .dataframe tbody tr th:only-of-type {\n",
+       "        vertical-align: middle;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe tbody tr th {\n",
+       "        vertical-align: top;\n",
+       "    }\n",
+       "\n",
+       "    .dataframe thead th {\n",
+       "        text-align: right;\n",
+       "    }\n",
+       "</style>\n",
+       "<table border=\"1\" class=\"dataframe\">\n",
+       "  <thead>\n",
+       "    <tr style=\"text-align: right;\">\n",
+       "      <th></th>\n",
+       "      <th>second_name</th>\n",
+       "      <th>team</th>\n",
+       "      <th>element_type</th>\n",
+       "      <th>selected_by_percent</th>\n",
+       "      <th>now_cost</th>\n",
+       "      <th>minutes</th>\n",
+       "      <th>transfers_in</th>\n",
+       "      <th>value_season</th>\n",
+       "      <th>total_points</th>\n",
+       "      <th>position</th>\n",
+       "    </tr>\n",
+       "  </thead>\n",
+       "  <tbody>\n",
+       "    <tr>\n",
+       "      <th>0</th>\n",
+       "      <td>Özil</td>\n",
+       "      <td>Arsenal</td>\n",
+       "      <td>3</td>\n",
+       "      <td>0.5</td>\n",
+       "      <td>67</td>\n",
+       "      <td>0</td>\n",
+       "      <td>3441</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>Midfielder</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>1</th>\n",
+       "      <td>Papastathopoulos</td>\n",
+       "      <td>Arsenal</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0.1</td>\n",
+       "      <td>48</td>\n",
+       "      <td>0</td>\n",
+       "      <td>10266</td>\n",
+       "      <td>0.0</td>\n",
+       "      <td>0</td>\n",
+       "      <td>Defender</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>2</th>\n",
+       "      <td>Luiz Moreira Marinho</td>\n",
+       "      <td>Arsenal</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0.8</td>\n",
+       "      <td>54</td>\n",
+       "      <td>1396</td>\n",
+       "      <td>77139</td>\n",
+       "      <td>7.6</td>\n",
+       "      <td>41</td>\n",
+       "      <td>Defender</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>3</th>\n",
+       "      <td>Aubameyang</td>\n",
+       "      <td>Arsenal</td>\n",
+       "      <td>3</td>\n",
+       "      <td>6.7</td>\n",
+       "      <td>113</td>\n",
+       "      <td>2162</td>\n",
+       "      <td>1188955</td>\n",
+       "      <td>11.2</td>\n",
+       "      <td>126</td>\n",
+       "      <td>Midfielder</td>\n",
+       "    </tr>\n",
+       "    <tr>\n",
+       "      <th>4</th>\n",
+       "      <td>Soares</td>\n",
+       "      <td>Arsenal</td>\n",
+       "      <td>2</td>\n",
+       "      <td>0.3</td>\n",
+       "      <td>46</td>\n",
+       "      <td>744</td>\n",
+       "      <td>41332</td>\n",
+       "      <td>6.1</td>\n",
+       "      <td>28</td>\n",
+       "      <td>Defender</td>\n",
+       "    </tr>\n",
+       "  </tbody>\n",
+       "</table>\n",
+       "</div>"
+      ],
+      "text/plain": [
+       "            second_name     team  element_type selected_by_percent  now_cost  \\\n",
+       "0                  Özil  Arsenal             3                 0.5        67   \n",
+       "1      Papastathopoulos  Arsenal             2                 0.1        48   \n",
+       "2  Luiz Moreira Marinho  Arsenal             2                 0.8        54   \n",
+       "3            Aubameyang  Arsenal             3                 6.7       113   \n",
+       "4                Soares  Arsenal             2                 0.3        46   \n",
+       "\n",
+       "   minutes  transfers_in value_season  total_points    position  \n",
+       "0        0          3441          0.0             0  Midfielder  \n",
+       "1        0         10266          0.0             0    Defender  \n",
+       "2     1396         77139          7.6            41    Defender  \n",
+       "3     2162       1188955         11.2           126  Midfielder  \n",
+       "4      744         41332          6.1            28    Defender  "
+      ]
+     },
+     "execution_count": 76,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "slim_elements_df = elements_df[['second_name','team','element_type','selected_by_percent','now_cost','minutes','transfers_in','value_season','total_points']]\n",
+    "slim_elements_df['position'] = slim_elements_df.element_type.map(elements_types_df.set_index('id').singular_name)\n",
+    "slim_elements_df['team'] = slim_elements_df.team.map(teams_df.set_index('id').name)\n",
+    "#slim_elements_df.head()\n",
+    "slim_elements_df.head()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 77,
+   "id": "d7ab1a97-8e75-4ed4-b4a7-e4e8506c0592",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "Index(['id', 'name', 'deadline_time', 'average_entry_score', 'finished',\n",
+       "       'data_checked', 'highest_scoring_entry', 'deadline_time_epoch',\n",
+       "       'deadline_time_game_offset', 'highest_score', 'is_previous',\n",
+       "       'is_current', 'is_next', 'chip_plays', 'most_selected',\n",
+       "       'most_transferred_in', 'top_element', 'top_element_info',\n",
+       "       'transfers_made', 'most_captained', 'most_vice_captained'],\n",
+       "      dtype='object')"
+      ]
+     },
+     "execution_count": 77,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "gamedf.columns"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 79,
+   "id": "b0f79909-d4ae-4822-87b4-25acdf679059",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/html": [
+       "\n",
+       "        <iframe\n",
+       "            width=\"100%\"\n",
+       "            height=\"650\"\n",
+       "            src=\"http://127.0.0.1:8050/\"\n",
+       "            frameborder=\"0\"\n",
+       "            allowfullscreen\n",
+       "        ></iframe>\n",
+       "        "
+      ],
+      "text/plain": [
+       "<IPython.lib.display.IFrame at 0x2013e65faf0>"
+      ]
+     },
+     "metadata": {},
+     "output_type": "display_data"
+    }
+   ],
+   "source": [
+    "#df = px.data.tips()\n",
+    "# Build App\n",
+    "app = JupyterDash(__name__)\n",
+    "app.layout = html.Div([\n",
+    "    html.H1(\"Total Points per Player\"),\n",
+    "    dcc.Graph(id='graph'),\n",
+    "    html.Label([\n",
+    "        \"colorscale\",\n",
+    "        dcc.Dropdown(\n",
+    "            id='colorscale-dropdown', clearable=False,\n",
+    "            value='plasma', options=[\n",
+    "                {'label': c, 'value': c}\n",
+    "                for c in px.colors.named_colorscales()\n",
+    "            ])\n",
+    "    ]),\n",
+    "])\n",
+    "# Define callback to update graph\n",
+    "@app.callback(\n",
+    "    Output('graph', 'figure'),\n",
+    "    [Input(\"colorscale-dropdown\", \"value\")]\n",
+    ")\n",
+    "def update_figure(colorscale):\n",
+    "    return px.scatter(\n",
+    "        slim_elements_df, x=\"team\", y=\"total_points\", size=\"minutes\", color=\"minutes\", hover_data=['second_name'],\n",
+    "        color_continuous_scale=colorscale,\n",
+    "        render_mode=\"webgl\", title=\"Tips\"\n",
+    "    )\n",
+    "# Run app and display result inline in the notebook\n",
+    "app.run_server(mode='inline')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "7800f5a2-c94f-460e-8aca-25ee18feca83",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "adbf655e-4e4b-4ea4-ad4c-29004aa978fb",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.4"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}
