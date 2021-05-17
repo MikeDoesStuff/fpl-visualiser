@@ -8,7 +8,7 @@
    "outputs": [],
    "source": [
     "import plotly.express as px\n",
-    "from jupyter_dash import JupyterDash\n",
+    "import dash\n",
     "import dash_core_components as dcc\n",
     "import dash_html_components as html\n",
     "from dash.dependencies import Input, Output\n",
@@ -272,7 +272,7 @@
    "source": [
     "#df = px.data.tips()\n",
     "# Build App\n",
-    "app = JupyterDash(__name__)\n",
+    "app = dash.Dash(__name__)\n",
     "app.layout = html.Div([\n",
     "    html.H1(\"Total Points per Player\"),\n",
     "    dcc.Graph(id='graph'),\n",
@@ -298,7 +298,8 @@
     "        render_mode=\"webgl\", title=\"Tips\"\n",
     "    )\n",
     "# Run app and display result inline in the notebook\n",
-    "app.run_server(mode='inline')"
+    "if __name__ == '__main__':\n",
+    "    app.run_server()"
    ]
   },
   {
