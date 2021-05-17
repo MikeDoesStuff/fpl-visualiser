@@ -75,6 +75,6 @@ def update_figure(colorscale):
         render_mode="webgl", title="Tips"
     )
 # Run app and display result inline in the notebook
-if __name__ == '__main__'
+if __name__ == '__main__':
     app.run_server(debug=True)
 
