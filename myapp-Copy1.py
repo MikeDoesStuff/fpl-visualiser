@@ -48,8 +48,9 @@ slim_elements_df.head()
 
 #df = px.data.tips()
 # Build App
-server = app.server
+
 app = dash.Dash(__name__)
+server = app.server
 app.layout = html.Div([
     html.H1("Total Points per Player"),
     dcc.Graph(id='graph'),
