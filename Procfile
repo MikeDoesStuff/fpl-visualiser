@@ -1,1 +1,1 @@
-web: gunicorn myapp:server
+web: gunicorn myapp-Copy1:server
